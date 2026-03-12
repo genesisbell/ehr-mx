@@ -1,0 +1,9 @@
+-- CreateEnum
+CREATE TYPE "PatientStatus" AS ENUM ('PROVISIONAL', 'COMPLETE');
+
+-- AlterTable
+ALTER TABLE "patients" ADD COLUMN     "phone" TEXT,
+ADD COLUMN     "status" "PatientStatus" NOT NULL DEFAULT 'PROVISIONAL',
+ALTER COLUMN "curp" DROP NOT NULL,
+ALTER COLUMN "birth_date" DROP NOT NULL,
+ALTER COLUMN "sex" DROP NOT NULL;

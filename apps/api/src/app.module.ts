@@ -3,6 +3,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { HealthModule } from './health/health.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
+import { PatientModule } from './patient/patient.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { AuthModule } from './auth/auth.module';
     PrismaModule,
     AuthModule,
     HealthModule,
+    PatientModule,
   ],
 })
 export class AppModule {}

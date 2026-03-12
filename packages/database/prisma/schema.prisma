@@ -18,6 +18,11 @@ enum Role {
   RECEPTION
 }
 
+enum PatientStatus {
+  PROVISIONAL
+  COMPLETE
+}
+
 enum AuditAction {
   NOTE_CREATED
   NOTE_SIGNED
@@ -52,16 +57,18 @@ model User {
 }
 
 model Patient {
-  id          String   @id @default(uuid())
-  /// CURP — identificador único oficial mexicano
-  curp        String   @unique
+  id          String        @id @default(uuid())
+  /// CURP — identificador único oficial mexicano (optional for provisional patients)
+  curp        String?       @unique
   name        String
-  paternalSurname String  @map("paternal_surname")
-  maternalSurname String? @map("maternal_surname")
-  birthDate   DateTime @map("birth_date") @db.Date
-  sex         String   @db.Char(1) // 'M' | 'F'
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  paternalSurname String    @map("paternal_surname")
+  maternalSurname String?   @map("maternal_surname")
+  phone       String?
+  birthDate   DateTime?     @map("birth_date") @db.Date
+  sex         String?       @db.Char(1) // 'M' | 'F'
+  status      PatientStatus @default(PROVISIONAL)
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
 
   notes       ClinicalNote[]
 

@@ -1,0 +1,10 @@
+{
+  "required": "This field is required",
+  "minLength": "Must be at least {min} characters",
+  "maxLength": "Must be at most {max} characters",
+  "invalidCurp": "Invalid CURP format",
+  "curpLength": "CURP must be exactly 18 characters",
+  "invalidDate": "Invalid date",
+  "invalidPhone": "Invalid phone number",
+  "invalidSex": "Select a valid sex"
+}

@@ -1,0 +1,69 @@
+{
+  "realm": "ehr-dev",
+  "displayName": "EHR México - Dev",
+  "enabled": true,
+  "sslRequired": "external",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "bruteForceProtected": true,
+  "roles": {
+    "realm": [
+      { "name": "admin",       "description": "System administrator" },
+      { "name": "doctor",      "description": "Attending physician" },
+      { "name": "nurse",       "description": "Nursing staff" },
+      { "name": "reception",   "description": "Front desk / admissions" }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "ehr-api",
+      "name": "EHR API (NestJS)",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "change-me-in-production",
+      "bearerOnly": true,
+      "standardFlowEnabled": false,
+      "serviceAccountsEnabled": true,
+      "publicClient": false
+    },
+    {
+      "clientId": "ehr-web",
+      "name": "EHR Web (Next.js)",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "redirectUris": [
+        "http://localhost:*"
+      ],
+      "webOrigins": [
+        "http://localhost:*"
+      ],
+      "defaultClientScopes": ["openid", "profile", "email", "roles"]
+    }
+  ],
+  "users": [
+    {
+      "username": "dev-doctor",
+      "email": "doctor@ehr.dev",
+      "firstName": "Dr. Dev",
+      "lastName": "Doctor",
+      "enabled": true,
+      "credentials": [{ "type": "password", "value": "dev1234", "temporary": false }],
+      "realmRoles": ["doctor"]
+    },
+    {
+      "username": "dev-admin",
+      "email": "admin@ehr.dev",
+      "firstName": "Admin",
+      "lastName": "Dev",
+      "enabled": true,
+      "credentials": [{ "type": "password", "value": "dev1234", "temporary": false }],
+      "realmRoles": ["admin"]
+    }
+  ]
+}

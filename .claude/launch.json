@@ -1,0 +1,27 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "api",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "-w", "@ehr-mx/api"],
+      "port": 3001,
+      "env": {
+        "DATABASE_URL": "postgresql://ehr:secret@localhost:5432/ehr_dev",
+        "REDIS_URL": "redis://:secret@localhost:6379"
+      }
+    },
+    {
+      "name": "web",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--workspace=apps/web"],
+      "port": 3100
+    },
+    {
+      "name": "all",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3000
+    }
+  ]
+}

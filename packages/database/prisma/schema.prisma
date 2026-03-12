@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================
+// Enums
+// ============================================================
+
+enum Role {
+  ADMIN
+  DOCTOR
+  NURSE
+  RECEPTION
+}
+
+enum AuditAction {
+  NOTE_CREATED
+  NOTE_SIGNED
+  NOTE_VIEWED
+  PATIENT_CREATED
+  PATIENT_UPDATED
+  USER_CREATED
+  USER_ROLE_CHANGED
+  AUTH_LOGIN
+  AUTH_LOGOUT
+}
+
+// ============================================================
+// Models
+// ============================================================
+
+model User {
+  id          String   @id @default(uuid())
+  /// Keycloak subject (sub claim from JWT)
+  keycloakId  String   @unique @map("keycloak_id")
+  rfc         String?  // RFC del médico para vincular con e.firma
+  /// Stored .cer certificate (public, base64) — NEVER store .key
+  cerPem      String?  @map("cer_pem") @db.Text
+  role        Role
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  notes       ClinicalNote[]
+  auditLogs   AuditLog[]
+
+  @@map("users")
+}
+
+model Patient {
+  id          String   @id @default(uuid())
+  /// CURP — identificador único oficial mexicano
+  curp        String   @unique
+  name        String
+  paternalSurname String  @map("paternal_surname")
+  maternalSurname String? @map("maternal_surname")
+  birthDate   DateTime @map("birth_date") @db.Date
+  sex         String   @db.Char(1) // 'M' | 'F'
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  notes       ClinicalNote[]
+
+  @@map("patients")
+}
+
+model ClinicalNote {
+  id          String    @id @default(uuid())
+  patientId   String    @map("patient_id")
+  authorId    String    @map("author_id")
+
+  /// Structured note content (NOM-004 fields as JSON)
+  content     Json
+  /// SHA-256 hash of content at sign time — used for signature verification
+  contentHash String    @map("content_hash")
+
+  /// base64-encoded FIEL signature (null = unsigned draft)
+  signature   String?   @db.Text
+  /// e.firma certificate serial number
+  certSerial  String?   @map("cert_serial")
+  /// RFC from the signing certificate
+  signerRfc   String?   @map("signer_rfc")
+  /// Legal name from the signing certificate
+  signerName  String?   @map("signer_name")
+  signedAt    DateTime? @map("signed_at")
+
+  createdAt   DateTime  @default(now()) @map("created_at")
+  // NO updatedAt — notes are immutable after signing (RLS enforced)
+
+  patient     Patient   @relation(fields: [patientId], references: [id])
+  author      User      @relation(fields: [authorId], references: [id])
+
+  @@map("clinical_notes")
+}
+
+model AuditLog {
+  id          String      @id @default(uuid())
+  userId      String?     @map("user_id")
+  action      AuditAction
+  entityType  String      @map("entity_type")
+  entityId    String      @map("entity_id")
+  metadata    Json?
+  ipAddress   String?     @map("ip_address")
+  userAgent   String?     @map("user_agent") @db.Text
+  createdAt   DateTime    @default(now()) @map("created_at")
+  // NO updatedAt or soft-delete — append-only (RLS enforced)
+
+  user        User?       @relation(fields: [userId], references: [id])
+
+  @@map("audit_log")
+}

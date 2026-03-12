@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(lsof -i :3000)",
+      "Bash(npm run dev --workspace=apps/web)",
+      "Bash(docker compose up -d)",
+      "Bash(npm install next-auth@^4.24.10 -w @ehr-mx/web)"
+    ]
+  }
+}

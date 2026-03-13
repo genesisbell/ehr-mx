@@ -67,6 +67,16 @@ npm run dev -w @ehr-mx/api
 npm run dev --workspace=apps/web
 ```
 
+### 6. Stop everything
+
+```bash
+# Stop dev servers (Ctrl+C in the terminal running them), or kill by port:
+lsof -ti :3001,:3100 | xargs kill
+
+# Stop Docker services
+docker compose down
+```
+
 ## Dev URLs
 
 | Service       | URL                          |
